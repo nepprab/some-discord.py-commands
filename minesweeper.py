@@ -5,6 +5,11 @@ import random
 import asyncio
 import os
 import time
+
+class mini_games(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.running = dict()
     
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
@@ -458,3 +463,75 @@ import time
                         await msg.edit(embed=embed_)
                         await msg.remove_reaction('9️⃣', ctx.author)
         self.bot.loop.create_task(game())
+        
+        
+        
+       
+    
+    @commands.command(name='RPS')
+    @commands.cooldown(1, 15, BucketType.user)
+    async def rps(self, ctx, choice=None):
+        embed = discord.Embed(
+            description='React to one of the 3 given options below.',
+            colour=discord.Colour.green(),
+            title='Rock Paper Scissors!')
+        embed.set_footer(name="Made by **Pro_Gamer368#5064**")
+        msg = await ctx.send(embed=embed)
+        options = ['🪨', '🧻', '✂️']
+        for i in options:
+            await msg.add_reaction(i)
+        option = []
+
+        def check(m):
+            if m.user_id == ctx.author.id and m.message_id == msg.id and str(m.emoji) in options:
+                option.append(str(m.emoji))
+                return True
+            return False
+
+        try:
+            await self.bot.wait_for('raw_reaction_add', timeout=20.0, check=check)
+
+            embed = discord.Embed(colour=discord.Colour.red(), description='Good Game **{}**.'.format(ctx.author))
+            thrylos_opt = random.choice(options)
+
+            if thrylos_opt == option[0]:
+                embed.title = 'Draw!'
+                embed.add_field(name=ctx.author.display_name, value=option[0])
+                embed.add_field(name="Thrylos", value=thrylos_opt)
+            elif thrylos_opt == '🪨':
+                if option[0] == '🧻':
+                    embed.title = 'You win!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+                else:
+                    embed.title = 'You loose!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+            elif thrylos_opt == '🧻':
+                if option[0] == '✂️':
+                    embed.title = 'You win!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+                else:
+                    embed.title = 'You loose!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+            else:
+                if option[0] == '🪨':
+                    embed.title = 'You win!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+                else:
+                    embed.title = 'You loose!'
+                    embed.add_field(name=ctx.author.display_name, value=option[0])
+                    embed.add_field(name="Thrylos", value=thrylos_opt)
+            await msg.clear_reactions()
+            await msg.edit(embed=embed)
+
+        except asyncio.TimeoutError:
+            await msg.clear_reactions()
+            await msg.edit(content="You didn't respond in time, please be faster next time!")
+            
+            
+def setup(bot):
+   	bot.add_cog(mini_games(bot))
